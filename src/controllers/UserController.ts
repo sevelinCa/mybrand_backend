@@ -48,6 +48,6 @@ export const login = async (req: Request, res: Response) => {
       res.json({ message: "Invalid email or password" });
     }
   } catch (error: any) {
-    res.json({ message: error.message });
+    res.json({ message: error });
   }
 };
