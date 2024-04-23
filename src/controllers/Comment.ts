@@ -14,7 +14,7 @@ export const AddComment = async (req: Request, res: Response) => {
         })
 
         if(saveComment){
-            res.json({message:"Comment Added successfully"})
+            res.status(200).json({data:saveComment,message:"Comment Added successfully"})
         }else{
             res.json({message:"Problem in Adding Comment"})
 
@@ -23,7 +23,7 @@ export const AddComment = async (req: Request, res: Response) => {
         res.json({message:"This Blog No longer available"})
     }
   } catch (error: any) {
-    res.json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -33,9 +33,9 @@ export const selectComment = async(req:Request,res:Response)=>{
         const comment = await CommentModel.find({blog:id}).populate('blog')
         if(comment.length > 0){
 
-            res.json({comment:comment})
+            res.status(200).json({comment:comment})
         }else{
-            res.json({comment:"No blogs available"})
+            res.status(404).json({message:"No Comment Available on This blog"})
 
         }
 

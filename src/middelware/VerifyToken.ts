@@ -18,29 +18,27 @@ export const VerfiyToken = (req:Request,res:Response,next:NextFunction)=>{
                 
                     jwt.verify(RefreshToken, "sevelin12345", (err:any,decodedRefresh:any)=>{
                         if(err instanceof TokenExpiredError){
-                            res.json({message:"Expired Token"})
+                           return res.json({message:"Expired Token"})
                         }else if(err instanceof JsonWebTokenError){
-                            res.json({message:"Invalid refresh token"})
+                           return res.json({message:"Invalid refresh token"})
                         }else if(err){
-                            res.json({message:"error in refreshtken"})
+                           return res.json({message:"error in refreshtken"})
                         }else{
                          
-                            const userData = decodedRefresh
-                            const newaccesstoken = jwt.sign({user:userData}, "sevelin123", {expiresIn: "30s"});
+                            const newaccesstoken = jwt.sign({ user: decodedRefresh }, "sevelin123", { expiresIn: "30s" });
                             res.setHeader("Authorization", `Bearer ${newaccesstoken}`);
-                        
-                         
-                            (req as any).user = decodedRefresh
-                            next()
+                            (req as any).user = decodedRefresh;
+                            next();
                          
                         }
                     })
                 }
             }else if(err instanceof JsonWebTokenError){
-                res.json({message:"Invalid Token"})
+                return res.json({message:"Invalid Token"})
             }else if(err){
-                res.json({message:"Erro In token"})
+                return res.json({message:"Erro In token"})
             }else{
+                (req as any).user = decoded
                 next()   
             }
         })

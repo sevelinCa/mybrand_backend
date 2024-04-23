@@ -18,7 +18,7 @@ const CommentSchema = new mongoose.Schema<CommentModel>({
         ref: "blogs"
     }
     
-})
+}, {timestamps:true})
 
 const CommentModel = mongoose.model("comments", CommentSchema)
 export default CommentModel

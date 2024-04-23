@@ -42,7 +42,7 @@ export const addBlog = async (req: AuthenticatedRequest, res: Response) => {
         }
 
         try {
-          const { title, description } = req.body;
+          const { title, description,content } = req.body;
           const imageUrl = req.file?.path;
 
           if (!title || !description || !imageUrl) {
@@ -60,21 +60,27 @@ export const addBlog = async (req: AuthenticatedRequest, res: Response) => {
           const blogData = new BlogModel({
             title,
             description,
+            content,
             imageUrl: result.secure_url,
           });
            
           const adding  = await blogData.save();
           if(adding){
+            res.status(201).json({ message: "Blog added successfully",blog: blogData });
            
             const selectEmails:any = await SubModel.find()
-            const emails = selectEmails.map((emailData:any) => emailData.email)
-            transporter.sendMail({
-              from: "ngabosevelin@gmail.com",
-              to: emails.join(', '),
-              subject: "new blog added",
-              html: `new blog added visit <a href="https://google.com">View Blog</a>`
-            })
-            return res.status(201).json({ blog: blogData });
+            if(selectEmails.length >0){
+
+              const emails = selectEmails.map((emailData:any) => emailData.email)
+              transporter.sendMail({
+                from: "ngabosevelin@gmail.com",
+                to: emails.join(', '),
+                subject: "new blog added",
+                html: `new blog added`
+              })
+         
+             
+            }
           }
         } catch (error: any) {
           return res
@@ -92,10 +98,10 @@ export const selectBlog = async (req: Request, res: Response) => {
     if (blogData) {
       res.status(200).json({message: "success", blog: blogData});
     } else {
-      res.json({ message: "No Blog Available" });
+      res.status(404).json({ message: "No Blog Available" });
     }
   } catch (error: any) {
-    res.json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -104,18 +110,14 @@ export const singleBlog = async ( req: Request,res: Response)=>{
 
     const {id} = req.params
     const blog = await BlogModel.findById(id)
-
-
-
-   
     if(blog){
       res.status(200).json({blog: blog})
     }else{
-      res.status(200).json({message:"no blog available"})
+      res.status(404).json({message:"no blog available"})
     }
     
   } catch (error:any) {
-    res.json({ message: error.message });
+    res.status(500).json({ message: error.message });
     
   }
 }
@@ -125,16 +127,15 @@ export const deleteBlog = async (req: Request, res: Response) => {
     const { id } = req.params;
     const deleteD = await BlogModel.findByIdAndDelete(id,{new:true});
     if(deleteD){
-      res.json({
+      res.status(200).json({
         message:"Blog Delete successfully",
-        data: deleteD
       })
     }
     if (!deleteD) {
-      res.json({ message: "No blog found" });
+      res.status(404).json({ message: "No blog found" });
     }
   } catch (error: any) {
-    res.json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -153,7 +154,7 @@ export const updateBlog = async (req: Request, res: Response) => {
           }
 
           try {
-            const { title, description } = req.body;
+            const { title, description,content } = req.body;
             const imageUrl:any = req.file?.path;
             let updateData:any
             if(imageUrl){
@@ -167,12 +168,14 @@ export const updateBlog = async (req: Request, res: Response) => {
              updateData = {
               title,
               description,
+              content,
               imageUrl: result.secure_url,
             };
           }else{
             updateData = {
               title,
               description,
+              content
              
           }
         }
@@ -180,9 +183,9 @@ export const updateBlog = async (req: Request, res: Response) => {
             const updatedBlog = await BlogModel.findByIdAndUpdate(id,  updateData, { new: true });
 
             if (updatedBlog) {
-              res.json({ updatedBlog });
+              res.status(200).json({ updatedBlog });
             } else {
-              res.json({ message: "Failed to update blog" });
+              res.status(404).json({ message: "Failed to update blog" });
             }
           } catch (error:any) {
             return res.status(500).json({ message: "Internal server error", error: error.message });
@@ -190,11 +193,11 @@ export const updateBlog = async (req: Request, res: Response) => {
         });
       
     } else {
-      res.json({ message: "No blog available" });
+      res.status(404).json({ message: "No blog available" });
     }
   } catch (error: any) {
 
-    res.json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -216,10 +219,10 @@ export const addLike = async(req:Request,res:Response)=>{
     }
 
     await blogToLike.save()
-    res.json({message: "success"})
+    res.status(200).json({message: "success"})
  
   } catch (error:any) {
-    res.json({messsage:error.message})
+    res.status(500).json({messsage:error.message})
     
   }
 }

@@ -1,6 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import socketIo from "socket.io";
+
 import http, { get } from "http";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
@@ -12,7 +12,6 @@ config();
 
 const app: Application = express();
 const server = http.createServer(app);
-const io = new socketIo.Server(server);
 
 import "./config/configure";
 import MessageRoute from "./routes/MessageRoute";
@@ -20,33 +19,38 @@ import MessageRoute from "./routes/MessageRoute";
 app.use(express.json());
 
 app.use(
-  cors({
-    origin: true,
-  })
+  cors()
 );
-
 
 const options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'My Brand Api',
-      version: '1.0.0',
-      description: 'my brand API',
+      title: "My Brand",
+      version: "1.0.0",
+      description: "my brand API documentation",
     },
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    
     servers: [
       {
-          url: "http://localhost:4000"
-      }
-    ]
+        url: "http://localhost:4000",
+      },
+    ],
   },
-  apis: ['./src/routes/*.ts'], 
+  apis: ["./src/routes/*.ts"],
 };
 const swaggerSpec = swaggerJSDoc(options);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/auth", UserRoute);
 app.use("/blog", BlogRoute);
