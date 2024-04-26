@@ -2,6 +2,7 @@ import { Router, Request, Response, response } from "express";
 import { userModel } from "../models/userModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import transporter from "../config/nodemailer";
 
 export const register = async (req: Request, res: Response) => {
   const { email, username, password } = req.body;
@@ -13,13 +14,38 @@ export const register = async (req: Request, res: Response) => {
         email: email,
         password: hashedPassword,
       });
-      await userToSave.save();
+      const saveUser = await userToSave.save();
       const { password: _, ...responseData } = userToSave.toObject();
-      res.status(201).json({
-        success: true,
-        message: "User Created Successfully",
-        user: responseData,
-      });
+      if (saveUser) {
+        const sendMails = await transporter.sendMail({
+          from: "ngabosevelin@gmail.com",
+          to: responseData.email,
+          replyTo: "ngabosevelin@gmail.com",
+          subject: "Account created",
+          html: `
+          <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #f9f9f9; border-radius: 5px; font-family: Arial, sans-serif; line-height: 1.6;">
+    <h2 style="color: #333;">Hello ${responseData.username},</h2>
+    <p style="margin-bottom: 10px;">Your admin account has been successfully created for My_Brand. Below are your login credentials:</p>
+    <ul style="list-style-type: none; padding: 0;">
+      <li style="margin-bottom: 10px;"><strong>Email:</strong> ${responseData.email}</li>
+      <li style="margin-bottom: 10px;"><strong>Password:</strong> ${password}</li>
+    </ul>
+    <p><a href="https://sevelin-portfolio.netlify.app/admin/signin" target='_blank'>Login now</a></p>
+    <p style="margin-bottom: 10px;">Please use these credentials to log in to your account. Upon logging in, it's recommended to change your password immediately for security reasons.</p>
+    <p style="margin-bottom: 10px;">If you have any questions or need further assistance, feel free to contact us at ngabosevelin@gmail.com.</p>
+    <p>Best regards,<br>My_Brand</p>
+  </div>
+          
+          `,
+        });
+        if (sendMails) {
+          res.status(201).json({
+            success: true,
+            message: "User Created Successfully",
+            user: responseData,
+          });
+        }
+      }
     }
   } catch (error: any) {
     res.json({ message: error.message });
@@ -42,13 +68,11 @@ export const login = async (req: Request, res: Response) => {
         const refreshToken = jwt.sign({ user: responseUser }, refreshSecret, {
           expiresIn: "10d",
         });
-        res
-          .status(200)
-          .json({
-            user: responseUser,
-            token: token,
-            refreshToken: refreshToken,
-          });
+        res.status(200).json({
+          user: responseUser,
+          token: token,
+          refreshToken: refreshToken,
+        });
       } else {
         res.status(401).json({ message: "Invalid email or password" });
       }
