@@ -18,7 +18,7 @@ export const sendEmail = async(req:Request,res:Response)=>{
             to: "ngaboart123@gmail.com",
             replyTo: email,
             subject: `message from ${name}`,
-            html: `<h1 style="font-size:40px">${message}</h1>`
+            html: `<span style="font-size:18px">${message}</span>`
         })
         if(send){
             res.status(200).json({message:"Message successfully"})
