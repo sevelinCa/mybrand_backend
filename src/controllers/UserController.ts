@@ -2,7 +2,7 @@ import { Router, Request, Response, response } from "express";
 import { userModel } from "../models/userModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import transporter from "../config/nodemailer";
+import transporter from "../config/nodemailer"
 
 export const register = async (req: Request, res: Response) => {
   const { email, username, password } = req.body;
@@ -14,12 +14,11 @@ export const register = async (req: Request, res: Response) => {
         email: email,
         password: hashedPassword,
       });
-      const saveUser = await userToSave.save();
+      await userToSave.save();
       const { password: _, ...responseData } = userToSave.toObject();
-      if (saveUser) {
         const sendMails = await transporter.sendMail({
           from: "ngabosevelin@gmail.com",
-          to: responseData.email,
+          to: email,
           replyTo: "ngabosevelin@gmail.com",
           subject: "Account created",
           html: `
@@ -46,7 +45,9 @@ export const register = async (req: Request, res: Response) => {
           });
         }
       }
-    }
+      
+  
+    
   } catch (error: any) {
     res.json({ message: error.message });
   }
@@ -68,11 +69,13 @@ export const login = async (req: Request, res: Response) => {
         const refreshToken = jwt.sign({ user: responseUser }, refreshSecret, {
           expiresIn: "10d",
         });
-        res.status(200).json({
-          user: responseUser,
-          token: token,
-          refreshToken: refreshToken,
-        });
+        res
+          .status(200)
+          .json({
+            user: responseUser,
+            token: token,
+            refreshToken: refreshToken,
+          });
       } else {
         res.status(401).json({ message: "Invalid email or password" });
       }
