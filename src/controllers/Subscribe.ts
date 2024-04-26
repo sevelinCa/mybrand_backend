@@ -37,13 +37,30 @@ export const subscribe = async (req: Request, res: Response) => {
         email:email
     })
     if(saveEmail){
-        const sendNotification = await transporter.sendMail({
-            from: "ngabosevelin@gmail.com",
-            to: email,
-            replyTo: "ngaboart123@gmail.com",
-            subject: "subscription",
-            html: emailContent
-        })
+      const sendNotification = await transporter.sendMail({
+        from: "ngabosevelin@gmail.com",
+        to: email,
+        replyTo: "ngaboart123@gmail.com",
+        subject: "subscription",
+        html: `
+            <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
+                <div style="text-align: center;">
+                    <h1 style="color: #FDA640;">My_Brand</h1>
+                    <h2 style="color: #ffffff; background-color: #221F2F; padding: 10px;">Confirmation subscription</h2>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <img src="https://example.com/logo.svg" alt="Logo" style="width: 100px; height: 100px;">
+                    <p style="font-size: 16px;">Your subscription was successfully added.</p>
+                    <p style="font-size: 16px; line-height: 1.5;">Thank you for subscribing! You'll now receive notifications whenever I post new blogs, updates, and other exciting content. Stay tuned for valuable insights and exclusive offers.</p>
+                    <p style="font-size: 16px;">Visit site <a href="https://sevelin-portfolio.netlify.app/" target="_blank" style="color: #FDA640; text-decoration: none;">Here</a></p>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="color: #ffffff; background-color: #221F2F; padding: 10px; font-size: 14px;">&copy; Copyright 2024 All rights reserved</p>
+                </div>
+            </div>
+        `
+    });
+    
         if(sendNotification){
 
             res.status(200).json({message:"Subscription Successfully"})
