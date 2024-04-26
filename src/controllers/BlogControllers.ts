@@ -76,7 +76,23 @@ export const addBlog = async (req: AuthenticatedRequest, res: Response) => {
                 from: "ngabosevelin@gmail.com",
                 to: emails.join(', '),
                 subject: "new blog added",
-                html: `new blog added`
+                html: `
+                <div style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+    <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h1 style="color: #333;">New Blog Post Notification</h1>
+        <img src="${blogData.imageUrl}" alt="Blog Image" style="width: 100%; max-width: 400px; height: auto; margin-bottom: 20px; border-radius: 5px;">
+        <h2 style="font-size: 24px; margin-bottom: 10px;">Your Blog Post Title</h2>
+        <p style="color: #666;">Hello there!</p>
+        <p style="color: #666;">We're excited to inform you that a new blog post has been added to our website.</p>
+        <p style="color: #666;">Check it out now:</p>
+        <a href="https://sevelin-portfolio.netlify.app/openedblog?id=${adding._id}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Read Blog Post</a>
+        <p style="color: #666;">If you have any questions or feedback, feel free to reply to this email.</p>
+        <p style="color: #666;">Thank you for being a valued subscriber!</p>
+        <p style="color: #666;">Best Regards,<br>Your Name or Company Name</p>
+    </div>
+</div>
+
+                `
               })
          
              
