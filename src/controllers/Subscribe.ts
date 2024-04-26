@@ -18,7 +18,7 @@ export const subscribe = async (req: Request, res: Response) => {
             replyTo: "ngaboart123@gmail.com",
             subject: "subscription",
             html: `
-            <div style="font-family: 'Courier New', Courier, monospace;display:flex;flex-direction:column;gap:10px">
+            <div style="font-family: 'Courier New', Courier, monospace;display:block;gap:10px">
             <div style="width: 100%; height:20vh;background:#221F2F;display: flex;flex-direction: row;align-items: center;justify-content: center; gap:40px">
                 <h1 style="font-family: Arial, Helvetica, sans-serif;color: #FDA640;">My_Brand</h1>
                 <h1 style="color: white;">Confirmation subscription</h1>
