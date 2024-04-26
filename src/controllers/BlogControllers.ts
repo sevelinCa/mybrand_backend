@@ -77,11 +77,11 @@ export const addBlog = async (req: AuthenticatedRequest, res: Response) => {
                 to: emails.join(', '),
                 subject: "new blog added",
                 html: `
-                <div style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+                <div style="font-family: Arial, sans-serif; margin: 0; padding: 10px; background-color: #f4f4f4;">
     <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
         <h1 style="color: #333;">New Blog Post Notification</h1>
         <img src="${blogData.imageUrl}" alt="Blog Image" style="width: 100%; max-width: 400px; height: auto; margin-bottom: 20px; border-radius: 5px;">
-        <h2 style="font-size: 24px; margin-bottom: 10px;">Your Blog Post Title</h2>
+        <h2 style="font-size: 24px; margin-bottom: 10px;">${blogData.title}</h2>
         <p style="color: #666;">Hello there!</p>
         <p style="color: #666;">We're excited to inform you that a new blog post has been added to our website.</p>
         <p style="color: #666;">Check it out now:</p>
