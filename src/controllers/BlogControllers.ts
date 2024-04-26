@@ -88,7 +88,7 @@ export const addBlog = async (req: AuthenticatedRequest, res: Response) => {
         <a href="https://sevelin-portfolio.netlify.app/openedblog?id=${adding._id}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Read Blog Post</a>
         <p style="color: #666;">If you have any questions or feedback, feel free to reply to this email.</p>
         <p style="color: #666;">Thank you for being a valued subscriber!</p>
-        <p style="color: #666;">Best Regards,<br>Your Name or Company Name</p>
+        <p style="color: #666;">Best Regards,<br>My_Brand</p>
     </div>
 </div>
 
