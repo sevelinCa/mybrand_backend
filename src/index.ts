@@ -1,9 +1,10 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 
-import http, { get } from "http";
+import http from "http";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import { Server } from "socket.io";
 
 import { config } from "dotenv";
 import UserRoute from "./routes/UserRoute";
@@ -12,6 +13,19 @@ config();
 
 const app: Application = express();
 const server = http.createServer(app);
+const io = new Server(server,{
+  cors:{
+    origin: "http://localhost:3000",
+    methods: ["GET","POST"]
+  }
+})
+
+io.on('connection',(sokect:any)=>{
+  console.log("A user connected")
+
+})
+
+export {io}
 
 import "./config/configure";
 import MessageRoute from "./routes/MessageRoute";
@@ -56,6 +70,6 @@ app.use("/auth", UserRoute);
 app.use("/blog", BlogRoute);
 app.use("/message", MessageRoute);
 
-app.listen(4000, () => {
+server.listen(4000, () => {
   console.log(`Server Start on Port 4000`);
 });
