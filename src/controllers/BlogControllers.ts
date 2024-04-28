@@ -6,6 +6,7 @@ import cloudinary from "cloudinary";
 import transporter from "../config/nodemailer";
 import SubModel from "../models/Subscribe";
 import  jwt  from "jsonwebtoken";
+import { io } from "../index";
 
 
 cloudinary.v2.config({
@@ -235,6 +236,7 @@ export const addLike = async(req:Request,res:Response)=>{
     }
 
     await blogToLike.save()
+    io.emit("likeUpdate", {blogId: id,likes: blogToLike.likes})
     res.status(200).json({message: "success"})
  
   } catch (error:any) {
